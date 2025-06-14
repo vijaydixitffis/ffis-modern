@@ -9,6 +9,7 @@ import { OverallProgress } from './components/OverallProgress';
 import { ResultsModal } from './components/ResultsModal';
 import { ApplicationDetailsDialog } from './components/ApplicationDetailsDialog';
 import { SubmissionConfirmationDialog } from './components/SubmissionConfirmationDialog';
+import FFISLogo from '../resources/FFIS-logo.png';
 
 interface ApplicationDetails {
   name: string;
@@ -124,25 +125,44 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
       <div className="container mx-auto px-3 py-4 max-w-7xl h-screen flex flex-col">
-        {/* Compact Header */}
-        <div className="text-center mb-4">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-2">
-            <FileText className="w-6 h-6 text-white" />
+        {/* Header with FFIS Logo and Title */}
+        <div className="mb-6">
+          <div className="flex items-start justify-between">
+            {/* FFIS Logo */}
+            <div className="flex-shrink-0">
+              <img 
+                src={FFISLogo} 
+                alt="FFIS Logo" 
+                className="h-24 object-contain"
+              />
+            </div>
+            
+            {/* Title Section */}
+            <div className="flex-1 flex flex-col items-center">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <div className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full">
+                  <FileText className="w-5 h-5 text-white" />
+                </div>
+                <h1 className="text-2xl font-bold text-gray-800">
+                  Application Modernization Assessment
+                </h1>
+              </div>
+              <p className="text-gray-600 text-sm max-w-2xl">
+                Evaluate your application's modernization level across key domains
+              </p>
+            </div>
+            
+            {/* Empty div for balance */}
+            <div className="flex-shrink-0 w-24"></div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">
-            Application Modernization Assessment
-          </h1>
-          <p className="text-gray-600 text-sm max-w-2xl mx-auto">
-            Evaluate your application's modernization level across key domains
-          </p>
         </div>
 
         {/* Application Details Summary */}
         {applicationDetails && (
-          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4 mb-4">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-gray-800">{applicationDetails.name}</h2>
+                <h2 className="text-xl font-bold text-gray-800">{applicationDetails.name}</h2>
                 <p className="text-sm text-gray-600">Code: {applicationDetails.mnemonic}</p>
               </div>
               <div className="text-right">
@@ -154,7 +174,7 @@ function App() {
 
         {/* Categories Grid - Fixed Height */}
         <div className="flex-1 min-h-0">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 h-[75%]">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 h-[75%]">
             {categories.map((category, index) => (
               <CategoryCard
                 key={category.name}
@@ -167,7 +187,7 @@ function App() {
         </div>
 
         {/* Compact Overall Progress */}
-        <div className="mt-1 mb-2">
+        <div className="mt-2 mb-3">
           <OverallProgress
             categoryProgress={categoryProgress}
             totalQuestions={totalQuestions}
@@ -175,12 +195,12 @@ function App() {
           />
         </div>
 
-        {/* Compact Submit Button */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+        {/* Action Buttons */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 mb-2">
           <div className="flex flex-row items-center justify-center gap-4">
             <button
               onClick={() => setShowApplicationDetails(true)}
-              className="inline-flex items-center gap-2 px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-200 shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 hover:shadow-xl transform hover:scale-105"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 hover:shadow-xl transform hover:scale-105"
             >
               Start
             </button>
@@ -188,7 +208,7 @@ function App() {
             <button
               onClick={handleSubmit}
               disabled={!allQuestionsAnswered}
-              className={`inline-flex items-center gap-2 px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-200 shadow-lg ${
+              className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 shadow-lg ${
                 allQuestionsAnswered
                   ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-xl transform hover:scale-105'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -201,7 +221,7 @@ function App() {
             <button
               onClick={handleSubmission}
               disabled={!allQuestionsAnswered}
-              className={`inline-flex items-center gap-2 px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-200 shadow-lg ${
+              className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 shadow-lg ${
                 allQuestionsAnswered
                   ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 hover:shadow-xl transform hover:scale-105'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -210,6 +230,11 @@ function App() {
               Submit
             </button>
           </div>
+        </div>
+
+        {/* Copyright Notice */}
+        <div className="text-center text-sm text-gray-500 mt-2">
+          © 2025 Future Focus IT Solutions. All rights reserved.
         </div>
 
         {/* Category Dialog */}
