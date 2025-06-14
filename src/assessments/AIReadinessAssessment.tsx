@@ -21,6 +21,7 @@ interface CategoryProgress {
 interface AssessmentResult {
   score: number;
   level: string;
+  message: string;
   recommendations: string[];
 }
 
@@ -394,7 +395,18 @@ const ResultsModal: React.FC<{
             <p className="text-xl font-semibold text-gray-800 mb-1">
               {result.level}
             </p>
-            <p className="text-gray-600">{result.recommendations.join('\n')}</p>
+            <p className="text-gray-600 mb-4">{result.message}</p>
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Recommendations</h3>
+              <ul className="space-y-2">
+                {result.recommendations.map((recommendation, index) => (
+                  <li key={index} className="flex items-start gap-2 text-gray-600">
+                    <span className="text-blue-500">•</span>
+                    {recommendation}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
         <div className="mt-6 flex justify-end">
@@ -566,28 +578,65 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
 
       let level = '';
       let message = '';
+      let recommendations: string[] = [];
 
       if (percentage >= 80) {
         level = 'Advanced';
-        message = 'Fully ready for AI adoption and scaling';
+        message = 'Your organization demonstrates exceptional readiness for AI adoption';
+        recommendations = [
+          'Focus on scaling AI initiatives across the organization',
+          'Develop advanced AI capabilities and innovation centers',
+          'Establish AI leadership in your industry',
+          'Create AI-driven competitive advantages',
+          'Implement continuous AI improvement programs'
+        ];
       } else if (percentage >= 60) {
         level = 'Mature';
-        message = 'Ready, with minor gaps to address';
+        message = 'Your organization shows strong readiness for AI implementation';
+        recommendations = [
+          'Address remaining gaps in AI infrastructure',
+          'Expand AI use cases to more business units',
+          'Strengthen AI governance and compliance',
+          'Enhance AI talent development programs',
+          'Optimize AI operational processes'
+        ];
       } else if (percentage >= 40) {
         level = 'Developing';
-        message = 'Moderate readiness; significant gaps remain';
+        message = 'Your organization has moderate readiness for AI adoption';
+        recommendations = [
+          'Develop a comprehensive AI strategy and roadmap',
+          'Invest in core AI infrastructure and capabilities',
+          'Build essential AI skills and expertise',
+          'Establish basic AI governance frameworks',
+          'Start with pilot AI projects in key areas'
+        ];
       } else if (percentage >= 20) {
         level = 'Early Stage';
-        message = 'Low readiness; foundational work needed';
+        message = 'Your organization is in the initial stages of AI readiness';
+        recommendations = [
+          'Create awareness and education about AI benefits',
+          'Assess current technology infrastructure gaps',
+          'Develop basic data management capabilities',
+          'Identify quick-win AI opportunities',
+          'Build foundational AI skills and knowledge'
+        ];
       } else {
         level = 'Not Ready';
-        message = 'Not prepared for AI adoption';
+        message = 'Your organization needs significant preparation for AI adoption';
+        recommendations = [
+          'Develop a clear vision for AI adoption',
+          'Address fundamental technology infrastructure needs',
+          'Establish basic data management practices',
+          'Create awareness about AI importance',
+          'Build essential technical capabilities'
+        ];
       }
 
       return {
         score: percentage,
         level,
-        recommendations: []
+        message,
+        recommendations
       };
     }
     return null;
@@ -737,9 +786,9 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
         </button>
         <button
           onClick={handleSubmitAssessment}
-          disabled={!isAssessmentStarted}
+          disabled={!isAssessmentStarted || !allQuestionsAnswered}
           className={`px-6 py-2 rounded-lg transition-colors ${
-            !isAssessmentStarted
+            !isAssessmentStarted || !allQuestionsAnswered
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : 'bg-green-600 text-white hover:bg-green-700'
           }`}
