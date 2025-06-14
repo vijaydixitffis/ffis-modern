@@ -32,6 +32,10 @@ interface BasicInfo {
   phone: string;
 }
 
+interface AIReadinessAssessmentProps {
+  onComplete: () => void;
+}
+
 const categories = [
   {
     name: "Business Strategy and Objectives",
@@ -526,7 +530,7 @@ const BasicInfoDialog: React.FC<{
   );
 };
 
-const AIReadinessAssessment: React.FC = () => {
+const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplete }) => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number | null>(null);
   const [showResults, setShowResults] = useState(false);
@@ -628,6 +632,10 @@ const AIReadinessAssessment: React.FC = () => {
     setShowSuccessMessage(true);
     setBasicInfo(null);
     setIsAssessmentStarted(false);
+    setTimeout(() => {
+      setShowSuccessMessage(false);
+      onComplete();
+    }, 3000);
   };
 
   const handleResetAssessment = () => {
