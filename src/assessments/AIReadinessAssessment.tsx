@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Brain, CheckCircle, ChevronRight, ChevronLeft, X, BarChart2, Database, Settings, Users, DollarSign, Shield, Building2 } from 'lucide-react';
+import { Brain, CheckCircle, ChevronRight, ChevronLeft, X, BarChart2, Database, Settings, Users, DollarSign, Shield, Building2, Check } from 'lucide-react';
 
 interface Question {
   id: number;
@@ -22,6 +22,14 @@ interface AssessmentResult {
   score: number;
   level: string;
   recommendations: string[];
+}
+
+interface BasicInfo {
+  companyName: string;
+  contactName: string;
+  designation: string;
+  email: string;
+  phone: string;
 }
 
 const categories = [
@@ -219,6 +227,7 @@ interface CategoryDialogProps {
   questions: Question[];
   answers: Record<number, number>;
   onAnswerChange: (questionId: number, value: number) => void;
+  onNavigateCategory: (categoryIndex: number) => void;
 }
 
 const CategoryDialog: React.FC<CategoryDialogProps> = ({ 
@@ -227,26 +236,30 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
   category, 
   questions, 
   answers, 
-  onAnswerChange 
+  onAnswerChange,
+  onNavigateCategory
 }) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const currentQuestion = questions[currentQuestionIndex];
+  const currentCategoryIndex = categories.findIndex(c => c.name === category);
 
-  const handleSliderChange = (value: number) => {
-    onAnswerChange(currentQuestion.id, value);
+  const handleSliderChange = (questionId: number, value: number) => {
+    onAnswerChange(questionId, value);
   };
 
-  const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
+  const handleNextCategory = () => {
+    if (currentCategoryIndex < categories.length - 1) {
       onClose();
+      setTimeout(() => {
+        onNavigateCategory(currentCategoryIndex + 1);
+      }, 100);
     }
   };
 
-  const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+  const handlePreviousCategory = () => {
+    if (currentCategoryIndex > 0) {
+      onClose();
+      setTimeout(() => {
+        onNavigateCategory(currentCategoryIndex - 1);
+      }, 100);
     }
   };
 
@@ -256,66 +269,44 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-bold text-gray-800">{category}</h2>
-            {currentQuestionIndex === questions.length - 1 && (
-              <CheckCircle className="w-6 h-6 text-green-500" />
-            )}
-          </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        {/* Progress */}
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-700">
-              Progress: {currentQuestionIndex + 1}/{questions.length} completed
-            </span>
-            <span className="text-sm text-gray-600">
-              {Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}%
-            </span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
-            />
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">{category}</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
           </div>
         </div>
 
         {/* Questions */}
         <div className="flex-1 overflow-y-auto p-6">
           <div className="space-y-4">
-            {questions.map((question, index) => (
+            {questions.map((question) => (
               <div 
                 key={question.id} 
-                className={`bg-white rounded-lg shadow-sm p-4 ${
-                  index === currentQuestionIndex ? 'ring-2 ring-blue-500' : ''
-                }`}
+                className="bg-white rounded-lg shadow-sm p-4"
               >
-                <p className="text-gray-800 mb-3">{question.text}</p>
                 <div className="flex items-center gap-4">
-                  <div className="flex-1 flex items-center gap-2">
-                    <span className="text-xs text-gray-500">1</span>
+                  <p className="text-gray-800 flex-1">{question.text}</p>
+                  <div className="flex items-center gap-2 w-[20%]">
                     <input
                       type="range"
                       min="1"
                       max="5"
                       value={answers[question.id] || 3}
-                      onChange={(e) => handleSliderChange(parseInt(e.target.value))}
-                      className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      onChange={(e) => handleSliderChange(question.id, parseInt(e.target.value))}
+                      className="w-full h-1.5 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gray-700 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-gray-300 [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-lg [&::-webkit-slider-runnable-track]:bg-gradient-to-r [&::-webkit-slider-runnable-track]:from-red-500 [&::-webkit-slider-runnable-track]:via-orange-500 [&::-webkit-slider-runnable-track]:via-blue-500 [&::-webkit-slider-runnable-track]:via-green-300 [&::-webkit-slider-runnable-track]:to-green-700 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-gray-700 [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-gray-300 [&::-moz-range-thumb]:shadow-sm [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-lg [&::-moz-range-track]:bg-gradient-to-r [&::-moz-range-track]:from-red-500 [&::-moz-range-track]:via-orange-500 [&::-moz-range-track]:via-blue-500 [&::-moz-range-track]:via-green-300 [&::-moz-range-track]:to-green-700"
+                      style={{
+                        background: 'transparent',
+                      } as React.CSSProperties}
                     />
-                    <span className="text-xs text-gray-500">5</span>
+                    <span className="text-sm font-medium text-gray-700 min-w-[2rem] text-center">
+                      {answers[question.id] || '-'}
+                    </span>
                   </div>
-                  <span className="text-sm font-medium text-gray-700 min-w-[2rem] text-center">
-                    {answers[question.id] || '-'}
-                  </span>
                 </div>
               </div>
             ))}
@@ -323,27 +314,36 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
         </div>
 
         {/* Footer Navigation */}
-        <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
-          <button
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-              currentQuestionIndex === 0
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Previous
-          </button>
-
-          <button
-            onClick={handleNext}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200"
-          >
-            {currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next'}
-            <ChevronRight className="w-4 h-4" />
-          </button>
+        <div className="p-6 border-t border-gray-200">
+          <div className="flex justify-between items-center">
+            <button
+              onClick={handlePreviousCategory}
+              disabled={currentCategoryIndex === 0}
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                currentCategoryIndex === 0
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              <ChevronLeft className="w-5 h-5" />
+              Previous
+            </button>
+            <span className="text-sm text-gray-600">
+              Category {currentCategoryIndex + 1} of {categories.length}
+            </span>
+            <button
+              onClick={handleNextCategory}
+              disabled={currentCategoryIndex === categories.length - 1}
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                currentCategoryIndex === categories.length - 1
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              Next
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -406,11 +406,134 @@ const ResultsModal: React.FC<{
   );
 };
 
+const BasicInfoDialog: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (info: BasicInfo) => void;
+}> = ({ isOpen, onClose, onSubmit }) => {
+  const [formData, setFormData] = useState<BasicInfo>({
+    companyName: '',
+    contactName: '',
+    designation: '',
+    email: '',
+    phone: ''
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">Basic Information</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-1">
+              Company Name *
+            </label>
+            <input
+              type="text"
+              id="companyName"
+              required
+              value={formData.companyName}
+              onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="contactName" className="block text-sm font-medium text-gray-700 mb-1">
+              Contact Person Name *
+            </label>
+            <input
+              type="text"
+              id="contactName"
+              required
+              value={formData.contactName}
+              onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="designation" className="block text-sm font-medium text-gray-700 mb-1">
+              Designation *
+            </label>
+            <input
+              type="text"
+              id="designation"
+              required
+              value={formData.designation}
+              onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email *
+            </label>
+            <input
+              type="email"
+              id="email"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+              Phone Number *
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              required
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div className="pt-4">
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Start Assessment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 const AIReadinessAssessment: React.FC = () => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [isAssessmentStarted, setIsAssessmentStarted] = useState(false);
+  const [showBasicInfo, setShowBasicInfo] = useState(false);
+  const [basicInfo, setBasicInfo] = useState<BasicInfo | null>(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const totalQuestions = 50; // Fixed total questions
   const answeredQuestions = answers.filter(answer => answer.value !== null).length;
@@ -483,24 +606,28 @@ const AIReadinessAssessment: React.FC = () => {
     setSelectedCategoryIndex(categoryIndex);
   };
 
+  const handleNavigateCategory = (categoryIndex: number) => {
+    setSelectedCategoryIndex(categoryIndex);
+  };
+
   const handleCloseDialog = () => {
     setSelectedCategoryIndex(null);
   };
 
-  const handlePreviousCategory = () => {
-    if (selectedCategoryIndex !== null && selectedCategoryIndex > 0) {
-      setSelectedCategoryIndex(selectedCategoryIndex - 1);
-    }
-  };
-
-  const handleNextCategory = () => {
-    if (selectedCategoryIndex !== null && selectedCategoryIndex < categories.length - 1) {
-      setSelectedCategoryIndex(selectedCategoryIndex + 1);
-    }
-  };
-
   const handleStartAssessment = () => {
+    setShowBasicInfo(true);
+  };
+
+  const handleBasicInfoSubmit = (info: BasicInfo) => {
+    setBasicInfo(info);
+    setShowBasicInfo(false);
     setIsAssessmentStarted(true);
+  };
+
+  const handleSubmitAssessment = () => {
+    setShowSuccessMessage(true);
+    setBasicInfo(null);
+    setIsAssessmentStarted(false);
   };
 
   const handleResetAssessment = () => {
@@ -526,6 +653,35 @@ const AIReadinessAssessment: React.FC = () => {
         <p className="text-gray-600 mt-1">Evaluate your organization's readiness for AI adoption</p>
       </div>
 
+      {/* Basic Information Display */}
+      {basicInfo && (
+        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Organization Information</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <p className="text-sm text-gray-500">Company Name</p>
+              <p className="font-medium text-gray-800">{basicInfo.companyName}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Contact Person</p>
+              <p className="font-medium text-gray-800">{basicInfo.contactName}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Designation</p>
+              <p className="font-medium text-gray-800">{basicInfo.designation}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Email</p>
+              <p className="font-medium text-gray-800">{basicInfo.email}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Phone</p>
+              <p className="font-medium text-gray-800">{basicInfo.phone}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Categories Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {categories.map((category, index) => (
@@ -549,30 +705,47 @@ const AIReadinessAssessment: React.FC = () => {
 
       {/* Action Buttons */}
       <div className="flex justify-center space-x-4">
-        {!isAssessmentStarted ? (
-          <button
-            onClick={handleStartAssessment}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Start Assessment
-          </button>
-        ) : (
-          <>
-            <button
-              onClick={() => setShowResults(true)}
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              Assessment Results
-            </button>
-            <button
-              onClick={handleResetAssessment}
-              className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Reset Assessment
-            </button>
-          </>
-        )}
+        <button
+          onClick={handleStartAssessment}
+          disabled={isAssessmentStarted}
+          className={`px-6 py-2 rounded-lg transition-colors ${
+            isAssessmentStarted
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
+          }`}
+        >
+          Start
+        </button>
+        <button
+          onClick={() => setShowResults(true)}
+          disabled={!isAssessmentStarted}
+          className={`px-6 py-2 rounded-lg transition-colors ${
+            !isAssessmentStarted
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-gray-600 text-white hover:bg-gray-700'
+          }`}
+        >
+          Results
+        </button>
+        <button
+          onClick={handleSubmitAssessment}
+          disabled={!isAssessmentStarted}
+          className={`px-6 py-2 rounded-lg transition-colors ${
+            !isAssessmentStarted
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-green-600 text-white hover:bg-green-700'
+          }`}
+        >
+          Submit
+        </button>
       </div>
+
+      {/* Basic Info Dialog */}
+      <BasicInfoDialog
+        isOpen={showBasicInfo}
+        onClose={() => setShowBasicInfo(false)}
+        onSubmit={handleBasicInfoSubmit}
+      />
 
       {/* Category Dialog */}
       {selectedCategoryIndex !== null && (
@@ -583,6 +756,7 @@ const AIReadinessAssessment: React.FC = () => {
           questions={categories[selectedCategoryIndex].questions}
           answers={answers.reduce((acc, answer) => ({ ...acc, [answer.questionId]: answer.value || 0 }), {} as Record<number, number>)}
           onAnswerChange={handleAnswerChange}
+          onNavigateCategory={handleNavigateCategory}
         />
       )}
 
@@ -592,6 +766,32 @@ const AIReadinessAssessment: React.FC = () => {
           result={assessmentResult}
           onClose={() => setShowResults(false)}
         />
+      )}
+
+      {/* Success Message Dialog */}
+      {showSuccessMessage && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <Check className="h-6 w-6 text-green-600" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Thank you for taking the assessment</h3>
+              <p className="text-gray-600 mb-6">
+                Your responses are successfully recorded into the database.
+              </p>
+              <button
+                onClick={() => {
+                  setShowSuccessMessage(false);
+                  handleResetAssessment();
+                }}
+                className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

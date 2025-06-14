@@ -18,10 +18,10 @@ interface LayoutProps {
 function Layout({ children, title, description, navigationItems, onNavigationItemClick }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-4 flex gap-4">
+      <div className="container mx-auto px-4 py-4 flex gap-4 min-h-[calc(100vh-2rem)]">
         {/* Left Navigation - Compact with Logo */}
         <nav className="w-48 flex-shrink-0">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-2">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-2 h-full">
             {/* FFIS Logo */}
             <div className="mb-4 px-2">
               <img src={ffisLogo} alt="FFIS Logo" className="h-16 w-auto" />
@@ -50,7 +50,7 @@ function Layout({ children, title, description, navigationItems, onNavigationIte
 
         {/* Main Content */}
         <main className="flex-1 min-h-0">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 h-full">
             {children}
           </div>
         </main>
