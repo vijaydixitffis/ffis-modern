@@ -81,6 +81,11 @@ function ModernizationAssessment() {
     setSelectedCategoryIndex(null);
   };
 
+  const handleCloseAndShowResults = () => {
+    setSelectedCategoryIndex(null);
+    setShowResults(true);
+  };
+
   const handlePreviousCategory = () => {
     if (selectedCategoryIndex !== null && selectedCategoryIndex > 0) {
       setSelectedCategoryIndex(selectedCategoryIndex - 1);
@@ -302,6 +307,8 @@ function ModernizationAssessment() {
               category={category}
               completed={getCompletedCount(category.name)}
               onClick={() => handleCategoryClick(index)}
+              isLastCategory={index === categories.length - 1}
+              onClose={handleCloseAndShowResults}
             />
           ))}
         </div>

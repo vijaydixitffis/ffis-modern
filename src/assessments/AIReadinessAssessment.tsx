@@ -175,12 +175,15 @@ interface CategoryCardProps {
   completed: number;
   onClick: () => void;
   disabled?: boolean;
+  isLastCategory?: boolean;
+  onClose?: () => void;
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({ category, completed, onClick, disabled }) => {
+const CategoryCard: React.FC<CategoryCardProps> = ({ category, completed, onClick, disabled, isLastCategory = false, onClose }) => {
   const total = category.questions.length;
   const progress = total > 0 ? (completed / total) * 100 : 0;
   const isCompleted = completed === total;
+  const canClose = isLastCategory && isCompleted;
 
   return (
     <div
@@ -221,6 +224,26 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, completed, onClic
           />
         </div>
       </div>
+
+      {/* Close button for last category */}
+      {isLastCategory && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (canClose && onClose) {
+              onClose();
+            }
+          }}
+          disabled={!canClose}
+          className={`mt-3 w-full py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+            canClose
+              ? 'bg-green-600 text-white hover:bg-green-700'
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+          }`}
+        >
+          Close & View Results
+        </button>
+      )}
     </div>
   );
 };
@@ -667,6 +690,11 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
     setSelectedCategoryIndex(null);
   };
 
+  const handleCloseAndShowResults = () => {
+    setSelectedCategoryIndex(null);
+    setShowResults(true);
+  };
+
   const handleStartAssessment = () => {
     setShowBasicInfo(true);
   };
@@ -748,6 +776,8 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
             completed={getCompletedCount(category.name)}
             onClick={() => handleCategoryClick(index)}
             disabled={!isAssessmentStarted}
+            isLastCategory={index === categories.length - 1}
+            onClose={handleCloseAndShowResults}
           />
         ))}
       </div>

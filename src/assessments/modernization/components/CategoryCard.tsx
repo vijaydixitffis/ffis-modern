@@ -19,6 +19,8 @@ interface CategoryCardProps {
   category: Category;
   completed: number;
   onClick: () => void;
+  isLastCategory?: boolean;
+  onClose?: () => void;
 }
 
 const getCategoryIcon = (categoryName: string) => {
@@ -48,36 +50,26 @@ const getCategoryIcon = (categoryName: string) => {
   }
 };
 
-const getCategoryColor = (categoryName: string) => {
-  switch (categoryName) {
-    case 'Architecture':
-      return 'from-blue-500 to-blue-600';
-    case 'Development & Deployment':
-      return 'from-green-500 to-green-600';
-    case 'Scalability & Performance':
-      return 'from-yellow-500 to-orange-500';
-    case 'Data & Storage':
-      return 'from-purple-500 to-purple-600';
-    case 'Security & Compliance':
-      return 'from-red-500 to-red-600';
-    case 'User Experience':
-      return 'from-pink-500 to-pink-600';
-    case 'Observability & Monitoring':
-      return 'from-indigo-500 to-indigo-600';
-    case 'Technical Debt Management':
-      return 'from-gray-500 to-gray-600';
-    case 'Backward Compatibility & Lifecycle':
-      return 'from-teal-500 to-teal-600';
-    case 'Business Agility':
-      return 'from-emerald-500 to-emerald-600';
-    default:
-      return 'from-blue-500 to-blue-600';
-  }
+const getCategoryColor = (categoryName: string): string => {
+  const colors = {
+    'Architecture': 'from-blue-500 to-blue-600',
+    'Development & Deployment': 'from-purple-500 to-purple-600',
+    'Scalability & Performance': 'from-green-500 to-green-600',
+    'Data & Storage': 'from-yellow-500 to-yellow-600',
+    'Security & Compliance': 'from-red-500 to-red-600',
+    'User Experience': 'from-indigo-500 to-indigo-600',
+    'Observability & Monitoring': 'from-pink-500 to-pink-600',
+    'Technical Debt Management': 'from-teal-500 to-teal-600',
+    'Backward Compatibility & Lifecycle': 'from-orange-500 to-orange-600',
+    'Business Agility': 'from-cyan-500 to-cyan-600'
+  };
+  return colors[categoryName as keyof typeof colors] || 'from-gray-500 to-gray-600';
 };
 
-export const CategoryCard: React.FC<CategoryCardProps> = ({ category, completed, onClick }) => {
+export const CategoryCard: React.FC<CategoryCardProps> = ({ category, completed, onClick, isLastCategory = false, onClose }) => {
   const isCompleted = completed === category.questions.length;
   const progressPercentage = (completed / category.questions.length) * 100;
+  const canClose = isLastCategory && isCompleted;
 
   return (
     <div 
@@ -116,6 +108,26 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, completed,
           />
         </div>
       </div>
+
+      {/* Close button for last category */}
+      {isLastCategory && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (canClose && onClose) {
+              onClose();
+            }
+          }}
+          disabled={!canClose}
+          className={`mt-2 w-full py-1.5 px-2 rounded-lg text-xs font-medium transition-all duration-200 ${
+            canClose
+              ? 'bg-green-600 text-white hover:bg-green-700'
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+          }`}
+        >
+          Close & View Results
+        </button>
+      )}
     </div>
   );
 };
