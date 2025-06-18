@@ -256,6 +256,7 @@ interface CategoryDialogProps {
   answers: Record<number, number>;
   onAnswerChange: (questionId: number, value: number) => void;
   onNavigateCategory: (categoryIndex: number) => void;
+  onCloseAndShowResults?: () => void;
 }
 
 const CategoryDialog: React.FC<CategoryDialogProps> = ({ 
@@ -265,9 +266,15 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
   questions, 
   answers, 
   onAnswerChange,
-  onNavigateCategory
+  onNavigateCategory,
+  onCloseAndShowResults
 }) => {
   const currentCategoryIndex = categories.findIndex(c => c.name === category);
+  const isLastCategory = currentCategoryIndex === categories.length - 1;
+  
+  // Check if all questions in current category are answered
+  const answeredQuestions = questions.filter(q => answers[q.id] !== undefined && answers[q.id] !== null).length;
+  const allQuestionsAnswered = answeredQuestions === questions.length;
 
   const handleSliderChange = (questionId: number, value: number) => {
     onAnswerChange(questionId, value);
@@ -288,6 +295,12 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
       setTimeout(() => {
         onNavigateCategory(currentCategoryIndex - 1);
       }, 100);
+    }
+  };
+
+  const handleCloseAndShowResults = () => {
+    if (onCloseAndShowResults) {
+      onCloseAndShowResults();
     }
   };
 
@@ -359,18 +372,28 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
             <span className="text-sm text-gray-600">
               Category {currentCategoryIndex + 1} of {categories.length}
             </span>
-            <button
-              onClick={handleNextCategory}
-              disabled={currentCategoryIndex === categories.length - 1}
-              className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-                currentCategoryIndex === categories.length - 1
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-            >
-              Next
-              <ChevronRight className="w-5 h-5" />
-            </button>
+            {isLastCategory ? (
+              <button
+                onClick={handleCloseAndShowResults}
+                disabled={!allQuestionsAnswered}
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                  allQuestionsAnswered
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Close
+                <CheckCircle className="w-5 h-5" />
+              </button>
+            ) : (
+              <button
+                onClick={handleNextCategory}
+                className="px-4 py-2 rounded-lg flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Next
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -844,6 +867,10 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
           answers={answers.reduce((acc, answer) => ({ ...acc, [answer.questionId]: answer.value || 0 }), {} as Record<number, number>)}
           onAnswerChange={handleAnswerChange}
           onNavigateCategory={handleNavigateCategory}
+          onCloseAndShowResults={() => {
+            setShowResults(true);
+            handleCloseDialog();
+          }}
         />
       )}
 

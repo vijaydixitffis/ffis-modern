@@ -377,6 +377,7 @@ function ModernizationAssessment() {
           hasNext={selectedCategoryIndex < categories.length - 1}
           categoryIndex={selectedCategoryIndex}
           totalCategories={categories.length}
+          onCloseAndShowResults={handleCloseAndShowResults}
         />
       )}
 

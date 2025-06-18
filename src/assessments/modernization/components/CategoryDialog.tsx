@@ -14,6 +14,7 @@ interface CategoryDialogProps {
   hasNext: boolean;
   categoryIndex: number;
   totalCategories: number;
+  onCloseAndShowResults?: () => void;
 }
 
 export const CategoryDialog: React.FC<CategoryDialogProps> = ({
@@ -26,7 +27,8 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
   hasPrevious,
   hasNext,
   categoryIndex,
-  totalCategories
+  totalCategories,
+  onCloseAndShowResults
 }) => {
   const getAnswer = (questionId: number): Answer | undefined => {
     return answers.find(answer => answer.questionId === questionId);
@@ -37,6 +39,13 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
   ).length;
 
   const allQuestionsAnswered = completedQuestions === category.questions.length;
+  const isLastCategory = categoryIndex === totalCategories - 1;
+
+  const handleCloseAndShowResults = () => {
+    if (onCloseAndShowResults) {
+      onCloseAndShowResults();
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -124,18 +133,33 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
             ))}
           </div>
 
-          <button
-            onClick={onNext}
-            disabled={!hasNext}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-              hasNext
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            Next
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          {isLastCategory ? (
+            <button
+              onClick={handleCloseAndShowResults}
+              disabled={!allQuestionsAnswered}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                allQuestionsAnswered
+                  ? 'bg-green-600 text-white hover:bg-green-700'
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              Close
+              <CheckCircle className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={onNext}
+              disabled={!hasNext}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                hasNext
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </div>
