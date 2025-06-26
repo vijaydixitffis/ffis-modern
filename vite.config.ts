@@ -7,7 +7,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  base: '/moderna/',
+  base: '/ffis-modern/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
