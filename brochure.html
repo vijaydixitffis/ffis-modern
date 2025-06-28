@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Focus IT Solutions - Assessment Services Brochure</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background: #f8fafc;
+        }
+        
+        /* Page Setup */
+        .page {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 32px auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: visible;
+            border-radius: 8px;
+        }
+        
+        .page-content {
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Typography */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.75rem;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 0.25rem;
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 0.25rem;
+        }
+        
+        p {
+            margin-bottom: 0.5rem;
+            text-align: justify;
+            font-size: 0.9rem;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .company-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.25rem;
+        }
+        
+        .tagline {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+        
+        /* Service Cards */
+        .service-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .service-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .service-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .service-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .service-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        
+        /* Assessment Dimensions */
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin: 0.75rem 0;
+        }
+        
+        .dimension-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .dimension-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
+        }
+        
+        .dimension-desc {
+            color: #6b7280;
+            font-size: 0.75rem;
+            line-height: 1.3;
+        }
+        
+        /* Process Steps */
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 1rem 0;
+            gap: 0.5rem;
+        }
+        
+        .step {
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.25rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+            text-align: center;
+        }
+        
+        .step-desc {
+            font-size: 0.7rem;
+            color: #6b7280;
+            line-height: 1.2;
+            text-align: center;
+        }
+        
+        /* Benefits */
+        .benefits-list {
+            list-style: none;
+            margin: 0.75rem 0;
+        }
+        
+        .benefits-list li {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            align-items: flex-start;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        
+        .benefits-list li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+            margin-top: 0.1rem;
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        .contact-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        
+        .contact-item {
+            text-align: center;
+        }
+        
+        .contact-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+        }
+        
+        .contact-value {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        /* Page Break */
+        .page-break {
+            display: none;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 0.5rem 0;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 0.5rem;
+            font-size: 0.65rem;
+            color: #6b7280;
+            line-height: 1.2;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .page {
+                width: 210mm;
+                min-height: 297mm;
+                max-width: none;
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+                page-break-after: always;
+            }
+            .page-break {
+                display: block;
+                page-break-before: always;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .page {
+                max-width: 100vw;
+                padding: 0;
+            }
+            .page-content {
+                padding: 10px 2px;
+            }
+            .dimensions-grid {
+                grid-template-columns: 1fr;
+            }
+            .process-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .contact-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1: AI Readiness Assessment -->
+    <div class="page">
+        <div class="page-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>AI Readiness Assessment</h1>
+                <div class="company-name">Future Focus IT Solutions</div>
+                <div class="tagline">Empowering Organizations for the AI Revolution</div>
+            </div>
+            
+            <!-- Service Overview -->
+            <div class="service-section">
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-icon">🤖</div>
+                        <div class="service-title">Comprehensive AI Readiness Evaluation</div>
+                    </div>
+                    <p>Our AI Readiness Assessment evaluates your organization across <strong>8 critical dimensions</strong> to provide actionable insights for successful AI implementation. In today's rapidly evolving digital landscape, artificial intelligence has become a critical competitive differentiator.</p>
+                </div>
+            </div>
+            
+            <!-- Assessment Dimensions -->
+            <h2>What We Assess</h2>
+            <div class="dimensions-grid">
+                <div class="dimension-item">
+                    <div class="dimension-title">🎯 Business Strategy & Objectives</div>
+                    <div class="dimension-desc">AI objectives alignment, executive leadership support, use case prioritization, success metrics, and adoption roadmap</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🏗️ Technological Infrastructure</div>
+                    <div class="dimension-desc">AI workload support, cloud/on-premises resources, system integration, deployment tools, and scalable technology stack</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">📊 Data Infrastructure & Quality</div>
+                    <div class="dimension-desc">Data source inventory, accessibility, governance, quality standards, automated pipelines, and security compliance</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">⚙️ Operations & Process Efficiency</div>
+                    <div class="dimension-desc">Process documentation, automation opportunities, rapid experimentation workflows, incident response, and continuous improvement</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">👥 Talent & Skills</div>
+                    <div class="dimension-desc">In-house AI expertise, training programs, talent acquisition strategy, change management readiness, and cross-functional collaboration</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">💰 Financial Preparedness & ROI</div>
+                    <div class="dimension-desc">Budget allocation, cost modeling, ROI tracking, financial controls, and investment reassessment processes</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🛡️ Governance, Compliance & Ethics</div>
+                    <div class="dimension-desc">Data privacy policies, AI ethics guidelines, regulatory compliance, governance board oversight, and regular audits</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🏢 Department-Specific Readiness</div>
+                    <div class="dimension-desc">Business unit collaboration, IT support capabilities, security adaptation, operational training, and change management</div>
+                </div>
+            </div>
+            
+            <!-- Process -->
+            <h2>Our Assessment Process</h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Discovery & Planning</div>
+                    <div class="step-desc">Initial consultation, scope definition, stakeholder engagement, and resource planning</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Comprehensive Evaluation</div>
+                    <div class="step-desc">50-question assessment across 8 dimensions with interactive digital platform</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Analysis & Reporting</div>
+                    <div class="step-desc">Detailed scoring, gap analysis, customized recommendations, and priority action items</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Strategic Planning</div>
+                    <div class="step-desc">Implementation roadmap, resource allocation, and success metrics definition</div>
+                </div>
+            </div>
+            
+            <!-- Assessment Outcomes -->
+            <h2>Assessment Outcomes</h2>
+            <div class="dimensions-grid">
+                <div class="dimension-item">
+                    <div class="dimension-title">📊 AI Readiness Score</div>
+                    <div class="dimension-desc">Comprehensive scoring across all 8 dimensions with clear identification of AI readiness gaps and industry benchmarks</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🎯 Implementation Roadmap</div>
+                    <div class="dimension-desc">Prioritized AI initiatives with resource requirements, timeline estimates, and risk mitigation strategies</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">💡 Strategic Recommendations</div>
+                    <div class="dimension-desc">AI technology stack options, implementation approaches, and best practices for successful adoption</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">📈 ROI Analysis</div>
+                    <div class="dimension-desc">Cost-benefit analysis of AI initiatives with expected performance gains and competitive advantage quantification</div>
+                </div>
+            </div>
+            
+            <!-- Contact Section -->
+            <div class="contact-section">
+                <div class="contact-title">Ready to Transform Your AI Readiness?</div>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value">info@futurefocusit.solutions</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">Phone</div>
+                        <div class="contact-value">+91 8275421793</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">Website</div>
+                        <div class="contact-value">www.futurefocusit.solutions</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                © 2024 Future Focus IT Solutions. All rights reserved.
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- Page 2: Application Modernization Assessment -->
+    <div class="page">
+        <div class="page-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>Application Modernization Assessment</h1>
+                <div class="company-name">Future Focus IT Solutions</div>
+                <div class="tagline">Transform Your Legacy Systems into Modern Powerhouses</div>
+            </div>
+            
+            <!-- Service Overview -->
+            <div class="service-section">
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-icon">🚀</div>
+                        <div class="service-title">Comprehensive Modernization Evaluation</div>
+                    </div>
+                    <p>Our Application Modernization Assessment evaluates your applications across <strong>10 critical modernization dimensions</strong> to identify transformation opportunities and create a clear path to digital excellence. Legacy applications can become significant barriers to innovation, scalability, and competitive advantage.</p>
+                </div>
+            </div>
+            
+            <!-- Assessment Dimensions -->
+            <h2>What We Evaluate</h2>
+            <div class="dimensions-grid">
+                <div class="dimension-item">
+                    <div class="dimension-title">🏗️ Architecture Modernity</div>
+                    <div class="dimension-desc">Microservices adoption, API-first design, containerization, serverless capabilities, and edge computing readiness</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🚀 Development & Deployment</div>
+                    <div class="dimension-desc">CI/CD automation, Infrastructure as Code, DevSecOps integration, and automated testing practices</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">📈 Scalability & Performance</div>
+                    <div class="dimension-desc">Elastic scalability, high availability strategies, asynchronous processing, and performance optimization</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">💾 Data & Storage</div>
+                    <div class="dimension-desc">Polyglot persistence, real-time processing, data governance, and modern data architecture patterns</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🔒 Security & Compliance</div>
+                    <div class="dimension-desc">Zero trust architecture, end-to-end encryption, modern API security standards, and automated security testing</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🎨 User Experience</div>
+                    <div class="dimension-desc">Responsive UI frameworks, mobile-first design, performance optimization, and modern interface patterns</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">📊 Observability & Monitoring</div>
+                    <div class="dimension-desc">Centralized logging, automated incident response, metrics tracking, and real-time performance monitoring</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🔧 Technical Debt Management</div>
+                    <div class="dimension-desc">Legacy code reduction, maintainable architecture, automated refactoring, and quality checks</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🔄 Backward Compatibility</div>
+                    <div class="dimension-desc">Compatibility maintenance, technology lifecycle management, dependency upgrades, and version control</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">⚡ Business Agility</div>
+                    <div class="dimension-desc">Fast time-to-market, low change failure rates, data-driven decisions, and API ecosystem readiness</div>
+                </div>
+            </div>
+            
+            <!-- Assessment Outcomes -->
+            <h2>Assessment Outcomes</h2>
+            <div class="dimensions-grid">
+                <div class="dimension-item">
+                    <div class="dimension-title">📊 Modernization Score</div>
+                    <div class="dimension-desc">Comprehensive scoring across all 10 dimensions with clear identification of modernization gaps and industry benchmarks</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">🎯 Transformation Roadmap</div>
+                    <div class="dimension-desc">Prioritized modernization initiatives with resource requirements, timeline estimates, and risk mitigation strategies</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">💡 Strategic Recommendations</div>
+                    <div class="dimension-desc">Technology stack modernization options, architecture transformation approaches, and implementation best practices</div>
+                </div>
+                <div class="dimension-item">
+                    <div class="dimension-title">📈 ROI Analysis</div>
+                    <div class="dimension-desc">Cost-benefit analysis of modernization efforts with expected performance gains and competitive advantage quantification</div>
+                </div>
+            </div>
+            
+            <!-- Why Choose Us -->
+            <h2>Why Choose Future Focus IT Solutions?</h2>
+            <ul class="benefits-list">
+                <li><strong>Proven Framework:</strong> Industry-standard modernization assessment methodology with 10-dimensional evaluation approach</li>
+                <li><strong>Expert Guidance:</strong> Experienced application modernization specialists with deep understanding of legacy system challenges</li>
+                <li><strong>Comprehensive Coverage:</strong> End-to-end modernization assessment with technology, architecture, and business alignment</li>
+                <li><strong>Measurable Results:</strong> Clear modernization metrics, progress tracking, and tangible business value delivery</li>
+            </ul>
+            
+            <!-- Contact Section -->
+            <div class="contact-section">
+                <div class="contact-title">Ready to Modernize Your Applications?</div>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value">info@futurefocusit.solutions</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">Phone</div>
+                        <div class="contact-value">+91 8275421793</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">Website</div>
+                        <div class="contact-value">www.futurefocusit.solutions</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                © 2024 Future Focus IT Solutions. All rights reserved. | "Modern applications drive modern business success."
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
