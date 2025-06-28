@@ -16,35 +16,26 @@ export const OverallProgress: React.FC<OverallProgressProps> = ({
   const completedCategories = categoryProgress.filter(cp => cp.completed === cp.total).length;
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4 mb-4">
-      <div className="text-center mb-3">
-        <h2 className="text-lg font-bold text-gray-800 mb-1">Overall Progress</h2>
-        <p className="text-gray-600 text-xs">
-          Complete all categories to get your assessment
-        </p>
+    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-3 mb-3">
+      <div className="flex items-center justify-between mb-2">
+        <div>
+          <h2 className="text-base font-bold text-gray-800">Overall Progress</h2>
+          <p className="text-gray-600 text-xs">
+            {answeredQuestions}/{totalQuestions} questions • {completedCategories}/{categoryProgress.length} categories
+          </p>
+        </div>
+        <div className="text-right">
+          <span className="text-lg font-bold text-blue-600">
+            {Math.round(overallPercentage)}%
+          </span>
+        </div>
       </div>
 
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-semibold text-gray-700">
-            Questions Answered
-          </span>
-          <span className="text-lg font-bold text-blue-600">
-            {answeredQuestions}/{totalQuestions}
-          </span>
-        </div>
-
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${overallPercentage}%` }}
-          />
-        </div>
-
-        <div className="flex justify-between text-xs text-gray-600">
-          <span>{Math.round(overallPercentage)}% Complete</span>
-          <span>{completedCategories}/{categoryProgress.length} Categories Done</span>
-        </div>
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div
+          className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500"
+          style={{ width: `${overallPercentage}%` }}
+        />
       </div>
     </div>
   );

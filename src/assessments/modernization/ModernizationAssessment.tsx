@@ -69,11 +69,6 @@ function ModernizationAssessment() {
   };
 
   const handleCategoryClick = (categoryIndex: number) => {
-    if (!applicationDetails) {
-      alert('Please click the Start button and fill in the application details before proceeding with the assessment.');
-      setShowApplicationDetails(true);
-      return;
-    }
     setSelectedCategoryIndex(categoryIndex);
   };
 
@@ -120,7 +115,6 @@ function ModernizationAssessment() {
   const handleStartAssessment = (details: ApplicationDetails) => {
     setApplicationDetails(details);
     setShowApplicationDetails(false);
-    setSelectedCategoryIndex(0);
   };
 
   const getCompletedCount = (categoryName: string): number => {
@@ -136,7 +130,7 @@ function ModernizationAssessment() {
   const renderHeader = () => (
     <header className="flex-none p-4 border-b border-gray-200">
       <div className="flex items-center gap-4">
-        <a href="/" className="hover:opacity-80 transition-opacity">
+        <a href="." className="hover:opacity-80 transition-opacity">
           <img
             src={ffisLogo}
             alt="FFIS Logo"
@@ -276,17 +270,17 @@ function ModernizationAssessment() {
   );
 
   const renderModernizationAssessment = () => (
-    <div className="h-[90vh] w-[90vw] mx-auto flex flex-col">
+    <div className="w-[90vw] mx-auto flex flex-col min-h-screen">
       {renderHeader()}
       <main className="flex-1 p-4">
-        <div className="mb-6 text-center">
+        <div className="mb-4 text-center">
           <h1 className="text-2xl font-bold text-gray-800">How Modern is the Application?</h1>
           <p className="text-gray-600 mt-1">Evaluate your application's modernization level across key domains</p>
         </div>
 
         {/* Application Details Summary */}
         {applicationDetails && (
-          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 mb-6">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 mb-4">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-gray-800">{applicationDetails.name}</h2>
@@ -300,7 +294,7 @@ function ModernizationAssessment() {
         )}
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
           {categories.map((category, index) => (
             <CategoryCard
               key={category.name}
@@ -314,7 +308,7 @@ function ModernizationAssessment() {
         </div>
 
         {/* Overall Progress */}
-        <div className="mt-6">
+        <div className="mb-4">
           <OverallProgress
             categoryProgress={categoryProgress}
             totalQuestions={totalQuestions}
@@ -323,13 +317,22 @@ function ModernizationAssessment() {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-6 flex justify-center gap-4">
-          <button
-            onClick={() => setShowApplicationDetails(true)}
-            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Start
-          </button>
+        <div className="flex justify-center gap-4 mb-6">
+          {!applicationDetails ? (
+            <button
+              onClick={() => setShowApplicationDetails(true)}
+              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Start
+            </button>
+          ) : (
+            <button
+              onClick={() => setSelectedCategoryIndex(0)}
+              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Begin Assessment
+            </button>
+          )}
           <button
             onClick={handleSubmit}
             disabled={!allQuestionsAnswered}
