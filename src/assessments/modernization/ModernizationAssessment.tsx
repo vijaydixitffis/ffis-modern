@@ -11,6 +11,7 @@ import { ApplicationDetailsDialog } from './components/ApplicationDetailsDialog'
 import { SubmissionConfirmationDialog } from './components/SubmissionConfirmationDialog';
 import AIReadinessAssessment from '../AIReadinessAssessment';
 import ffisLogo from '../../assets/FFIS-logo.png';
+import { supabase } from '../../supabaseClient';
 
 interface ApplicationDetails {
   name: string;
@@ -18,6 +19,11 @@ interface ApplicationDetails {
   description: string;
   techStack: string;
   remarks: string;
+  ownerName: string;
+  companyName: string;
+  designation: string;
+  email: string;
+  phone: string;
 }
 
 function ModernizationAssessment() {
@@ -99,8 +105,31 @@ function ModernizationAssessment() {
     }
   };
 
-  const handleSubmission = () => {
-    if (allQuestionsAnswered) {
+  const handleSubmission = async () => {
+    if (allQuestionsAnswered && applicationDetails) {
+      // Construct responses string: '1-1,2-0,...,34-1'
+      const responses = answers
+        .sort((a, b) => a.questionId - b.questionId)
+        .map(a => `${a.questionId}-${a.value === 'yes' ? 1 : 0}`)
+        .join(',');
+
+      // Insert into Supabase
+      await supabase.from('app_response').insert([
+        {
+          name: applicationDetails.name,
+          mnemonic: applicationDetails.mnemonic,
+          description: applicationDetails.description,
+          techstack: applicationDetails.techStack,
+          remarks: applicationDetails.remarks,
+          ownername: applicationDetails.ownerName,
+          companyname: applicationDetails.companyName,
+          designation: applicationDetails.designation,
+          email: applicationDetails.email,
+          phone: applicationDetails.phone,
+          responses,
+        }
+      ]);
+
       setShowSubmissionConfirmation(true);
       setAnswers([]);
       setApplicationDetails(null);

@@ -16,6 +16,11 @@ interface ApplicationDetails {
   description: string;
   techStack: string;
   remarks: string;
+  ownerName: string;
+  companyName: string;
+  designation: string;
+  email: string;
+  phone: string;
 }
 
 function App() {
