@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Brain, CheckCircle, ChevronRight, ChevronLeft, X, BarChart2, Database, Settings, Users, DollarSign, Shield, Building2, Check } from 'lucide-react';
+import { supabase } from '../supabaseClient';
 
 interface Question {
   id: number;
@@ -728,14 +729,37 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
     setIsAssessmentStarted(true);
   };
 
-  const handleSubmitAssessment = () => {
-    setShowSuccessMessage(true);
-    setBasicInfo(null);
-    setIsAssessmentStarted(false);
-    setTimeout(() => {
-      setShowSuccessMessage(false);
-      onComplete();
-    }, 3000);
+  const handleSubmitAssessment = async () => {
+    if (allQuestionsAnswered && basicInfo) {
+      // Construct responses string: '1-2,2-5,...,50-3'
+      const responses = answers
+        .sort((a, b) => a.questionId - b.questionId)
+        .map(a => `${a.questionId}-${a.value}`)
+        .join(',');
+
+      // Insert into Supabase
+      await supabase.from('ai_response').insert([
+        {
+          company_name: basicInfo.companyName,
+          contact_name: basicInfo.contactName,
+          designation: basicInfo.designation,
+          email: basicInfo.email,
+          phone: basicInfo.phone,
+          responses,
+        }
+      ]);
+
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+        setIsAssessmentStarted(false);
+        setBasicInfo(null);
+        setAnswers([]);
+        setSelectedCategoryIndex(null);
+        setShowResults(false);
+        onComplete();
+      }, 3000);
+    }
   };
 
   const handleResetAssessment = () => {
