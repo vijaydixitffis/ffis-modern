@@ -301,17 +301,17 @@ function ModernizationAssessment() {
   );
 
   const renderModernizationAssessment = () => (
-    <div className="w-[90vw] mx-auto flex flex-col min-h-screen">
+    <div className="w-[90vw] mx-auto flex flex-col min-h-screen pb-24">
       {renderHeader()}
       <main className="flex-1 p-4">
-        <div className="mb-4 text-center">
-          <h1 className="text-2xl font-bold text-gray-800">How Modern is the Application?</h1>
-          <p className="text-gray-600 mt-1">Evaluate your application's modernization level across key domains</p>
+        <div className="mb-2 text-center">
+          <h1 className="text-xl font-bold text-gray-800">How Modern is the Application?</h1>
+          <p className="text-gray-600 mt-1 text-sm">Evaluate your application's modernization level across key domains</p>
         </div>
 
         {/* Application Details Summary */}
         {applicationDetails && (
-          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 mb-4">
+          <div className="bg-white rounded-lg shadow border border-gray-100 p-2 mb-2">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-gray-800">{applicationDetails.name}</h2>
@@ -325,7 +325,7 @@ function ModernizationAssessment() {
         )}
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
           {categories.map((category, index) => (
             <CategoryCard
               key={category.name}
@@ -339,7 +339,7 @@ function ModernizationAssessment() {
         </div>
 
         {/* Overall Progress */}
-        <div className="mb-4">
+        <div>
           <OverallProgress
             categoryProgress={categoryProgress}
             totalQuestions={totalQuestions}
@@ -348,7 +348,7 @@ function ModernizationAssessment() {
         </div>
 
         {/* Action Buttons */}
-        <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-gray-200 py-4 flex justify-center gap-4 shadow-lg">
+        <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-gray-200 py-3 flex justify-center gap-4 shadow-lg">
           {!applicationDetails ? (
             <button
               onClick={() => setShowApplicationDetails(true)}

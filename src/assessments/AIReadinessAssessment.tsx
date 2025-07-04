@@ -772,41 +772,41 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
   return (
     <div className="space-y-6 pb-24">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-800">AI Readiness Assessment</h1>
-        <p className="text-gray-600 mt-1">Evaluate your organization's readiness for AI adoption</p>
+        <h1 className="text-xl font-bold text-gray-800">AI Readiness Assessment</h1>
+        <p className="text-gray-600 mt-1 text-sm">Evaluate your organization's readiness for AI adoption</p>
       </div>
 
       {/* Basic Information Display */}
       {basicInfo && (
-        <div className="bg-white rounded-xl shadow-md p-3 border border-gray-200">
-          <h2 className="text-base font-semibold text-gray-800 mb-2">Organization Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        <div className="bg-white rounded-lg shadow p-2 border border-gray-200">
+          <h2 className="text-sm font-semibold text-gray-800 mb-1">Organization Information</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
             <div>
               <p className="text-xs text-gray-500">Company Name</p>
-              <p className="font-medium text-gray-800 text-sm">{basicInfo.companyName}</p>
+              <p className="font-medium text-gray-800 text-xs">{basicInfo.companyName}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Contact Person</p>
-              <p className="font-medium text-gray-800 text-sm">{basicInfo.contactName}</p>
+              <p className="font-medium text-gray-800 text-xs">{basicInfo.contactName}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Designation</p>
-              <p className="font-medium text-gray-800 text-sm">{basicInfo.designation}</p>
+              <p className="font-medium text-gray-800 text-xs">{basicInfo.designation}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Email</p>
-              <p className="font-medium text-gray-800 text-sm">{basicInfo.email}</p>
+              <p className="font-medium text-gray-800 text-xs">{basicInfo.email}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Phone</p>
-              <p className="font-medium text-gray-800 text-sm">{basicInfo.phone}</p>
+              <p className="font-medium text-gray-800 text-xs">{basicInfo.phone}</p>
             </div>
           </div>
         </div>
       )}
 
       {/* Categories Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
         {categories.map((category, index) => (
           <CategoryCard
             key={category.name}
