@@ -207,10 +207,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, completed, onClic
         {category.name}
       </h3>
       
-      <p className="text-gray-600 text-xs mb-3 flex-1">
-        {category.questions.length} questions
-      </p>
-      
       <div className="space-y-1">
         <div className="flex justify-between text-xs">
           <span className="text-gray-600">Progress</span>
@@ -225,26 +221,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, completed, onClic
           />
         </div>
       </div>
-
-      {/* Close button for last category */}
-      {isLastCategory && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            if (canClose && onClose) {
-              onClose();
-            }
-          }}
-          disabled={!canClose}
-          className={`mt-3 w-full py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-            canClose
-              ? 'bg-green-600 text-white hover:bg-green-700'
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-          }`}
-        >
-          Close & View Results
-        </button>
-      )}
     </div>
   );
 };
@@ -409,7 +385,7 @@ const OverallProgress: React.FC<{
   const progress = (answeredQuestions / totalQuestions) * 100;
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4 mb-6">
+    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4 mb-2">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-gray-800">Overall Progress</h3>
         <span className="text-sm text-gray-600">
