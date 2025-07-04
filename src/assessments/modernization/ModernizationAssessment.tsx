@@ -159,8 +159,8 @@ function ModernizationAssessment() {
   };
 
   const renderHeader = () => (
-    <header className="flex-none p-4 border-b border-gray-200">
-      <div className="flex items-center gap-4">
+    <header className="flex-none p-3 border-b border-gray-200">
+      <div className="flex items-center gap-3">
         <a href="." className="hover:opacity-80 transition-opacity">
           <img
             src={ffisLogo}
@@ -169,24 +169,46 @@ function ModernizationAssessment() {
           />
         </a>
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Future Focus IT Solutions and Strategic Consulting</h1>
-          <p className="text-gray-600 text-base mt-1">Comprehensive tools to evaluate your organization's AI readiness and application modernization status</p>
+          <h1 className="text-lg font-bold text-gray-800">Future Focus IT Solutions and Strategic Consulting</h1>
+          <p className="text-gray-600 text-xs mt-1">Comprehensive tools to evaluate your organization's AI readiness and application modernization status</p>
         </div>
       </div>
     </header>
   );
 
-  const renderFooter = () => (
-    <footer className="flex-none p-3 border-t border-gray-200">
-      <p className="text-center text-gray-600 text-xs">
-        © {new Date().getFullYear()} Future Focus IT Solutions. All rights reserved.
-      </p>
-    </footer>
+  // Horizontal navigation bar for assessments
+  const renderAssessmentNav = () => (
+    <nav className="w-full border-b border-gray-100 bg-white">
+      <div className="grid grid-cols-3 items-center text-center py-1">
+        <div>
+          <button
+            className={`px-3 py-0.5 rounded-md text-xs font-medium transition-colors ${currentView === 'ai-readiness' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-blue-50'}`}
+            onClick={() => setCurrentView('ai-readiness')}
+          >
+            AI Readiness Assessment
+          </button>
+        </div>
+        <div>
+          <button
+            className={`px-3 py-0.5 rounded-md text-xs font-medium transition-colors ${currentView === 'modernization' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-purple-50'}`}
+            onClick={() => setCurrentView('modernization')}
+          >
+            Application Modernization Assessment
+          </button>
+        </div>
+        <div className="text-[10px] text-gray-400 text-right pr-2">
+          © {new Date().getFullYear()} Future Focus IT Solutions. All rights reserved.
+        </div>
+      </div>
+    </nav>
   );
+
+  const renderFooter = () => null;
 
   const renderHomePage = () => (
     <div className="h-[90vh] w-[90vw] mx-auto flex flex-col">
       {renderHeader()}
+      {renderAssessmentNav()}
       <main className="flex-1 p-4">
         <div className="space-y-4">
           {/* Assessment Cards */}
@@ -293,6 +315,7 @@ function ModernizationAssessment() {
   const renderAIReadinessAssessment = () => (
     <div className="h-[90vh] w-[90vw] mx-auto flex flex-col">
       {renderHeader()}
+      {renderAssessmentNav()}
       <main className="flex-1 p-4">
         <AIReadinessAssessment onComplete={() => setCurrentView('home')} />
       </main>
@@ -303,6 +326,7 @@ function ModernizationAssessment() {
   const renderModernizationAssessment = () => (
     <div className="w-[90vw] mx-auto flex flex-col min-h-screen pb-24">
       {renderHeader()}
+      {renderAssessmentNav()}
       <main className="flex-1 p-4">
         <div className="mb-2 text-center">
           <h1 className="text-xl font-bold text-gray-800">How Modern is the Application?</h1>
