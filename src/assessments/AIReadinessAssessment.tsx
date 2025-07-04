@@ -770,7 +770,7 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-gray-800">AI Readiness Assessment</h1>
         <p className="text-gray-600 mt-1">Evaluate your organization's readiness for AI adoption</p>
@@ -778,28 +778,28 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
 
       {/* Basic Information Display */}
       {basicInfo && (
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Organization Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="bg-white rounded-xl shadow-md p-3 border border-gray-200">
+          <h2 className="text-base font-semibold text-gray-800 mb-2">Organization Information</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             <div>
-              <p className="text-sm text-gray-500">Company Name</p>
-              <p className="font-medium text-gray-800">{basicInfo.companyName}</p>
+              <p className="text-xs text-gray-500">Company Name</p>
+              <p className="font-medium text-gray-800 text-sm">{basicInfo.companyName}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Contact Person</p>
-              <p className="font-medium text-gray-800">{basicInfo.contactName}</p>
+              <p className="text-xs text-gray-500">Contact Person</p>
+              <p className="font-medium text-gray-800 text-sm">{basicInfo.contactName}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Designation</p>
-              <p className="font-medium text-gray-800">{basicInfo.designation}</p>
+              <p className="text-xs text-gray-500">Designation</p>
+              <p className="font-medium text-gray-800 text-sm">{basicInfo.designation}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Email</p>
-              <p className="font-medium text-gray-800">{basicInfo.email}</p>
+              <p className="text-xs text-gray-500">Email</p>
+              <p className="font-medium text-gray-800 text-sm">{basicInfo.email}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Phone</p>
-              <p className="font-medium text-gray-800">{basicInfo.phone}</p>
+              <p className="text-xs text-gray-500">Phone</p>
+              <p className="font-medium text-gray-800 text-sm">{basicInfo.phone}</p>
             </div>
           </div>
         </div>
@@ -829,7 +829,7 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
       )}
 
       {/* Action Buttons */}
-      <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-gray-200 py-4 flex justify-center space-x-4 shadow-lg">
+      <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-gray-200 py-3 flex justify-center space-x-4 shadow-lg">
         <button
           onClick={handleStartAssessment}
           disabled={isAssessmentStarted}
