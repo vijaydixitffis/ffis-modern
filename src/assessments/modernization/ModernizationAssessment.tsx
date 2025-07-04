@@ -107,6 +107,11 @@ function ModernizationAssessment() {
 
   const handleSubmission = async () => {
     if (allQuestionsAnswered && applicationDetails) {
+      // Clear state before insert
+      setAnswers([]);
+      setApplicationDetails(null);
+      setSelectedCategoryIndex(null);
+
       // Construct responses string: '1-1,2-0,...,34-1'
       const responses = answers
         .sort((a, b) => a.questionId - b.questionId)
@@ -131,9 +136,6 @@ function ModernizationAssessment() {
       ]);
 
       setShowSubmissionConfirmation(true);
-      setAnswers([]);
-      setApplicationDetails(null);
-      setSelectedCategoryIndex(null);
       setTimeout(() => {
         setShowSubmissionConfirmation(false);
         setCurrentView('home');
@@ -346,7 +348,7 @@ function ModernizationAssessment() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-center gap-4 mb-6">
+        <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-gray-200 py-4 flex justify-center gap-4 shadow-lg">
           {!applicationDetails ? (
             <button
               onClick={() => setShowApplicationDetails(true)}

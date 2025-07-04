@@ -750,15 +750,6 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
       ]);
 
       setShowSuccessMessage(true);
-      setTimeout(() => {
-        setShowSuccessMessage(false);
-        setIsAssessmentStarted(false);
-        setBasicInfo(null);
-        setAnswers([]);
-        setSelectedCategoryIndex(null);
-        setShowResults(false);
-        onComplete();
-      }, 3000);
     }
   };
 
@@ -838,7 +829,7 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
       )}
 
       {/* Action Buttons */}
-      <div className="flex justify-center space-x-4">
+      <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-gray-200 py-4 flex justify-center space-x-4 shadow-lg">
         <button
           onClick={handleStartAssessment}
           disabled={isAssessmentStarted}
@@ -921,7 +912,12 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
               <button
                 onClick={() => {
                   setShowSuccessMessage(false);
-                  handleResetAssessment();
+                  setIsAssessmentStarted(false);
+                  setBasicInfo(null);
+                  setAnswers([]);
+                  setSelectedCategoryIndex(null);
+                  setShowResults(false);
+                  onComplete();
                 }}
                 className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors"
               >
