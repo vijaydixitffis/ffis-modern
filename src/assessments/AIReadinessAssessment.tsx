@@ -773,7 +773,7 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
     <div className="space-y-6 pb-24">
       <div className="text-center">
         <h1 className="text-xl font-bold text-gray-800">AI Readiness Assessment</h1>
-        <p className="text-gray-600 mt-1 text-sm">Evaluate your organization's readiness for AI adoption</p>
+        <p className="text-gray-600 mt-1 text-sm">Evaluate your organization's readiness for AI adoption. Answer each question between values Strongly disagree (1) to Strongly agree (5).</p>
       </div>
 
       {/* Basic Information Display */}
@@ -820,13 +820,11 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
         ))}
       </div>
 
-      {/* Overall Progress */}
-      {isAssessmentStarted && (
-        <OverallProgress
-          totalQuestions={totalQuestions}
-          answeredQuestions={answeredQuestions}
-        />
-      )}
+      {/* Overall Progress Bar (bottom) */}
+      <OverallProgress
+        totalQuestions={totalQuestions}
+        answeredQuestions={answeredQuestions}
+      />
 
       {/* Action Buttons */}
       <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-gray-200 py-3 flex justify-center space-x-4 shadow-lg">
