@@ -725,7 +725,7 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
         }
       ]);
 
-      setShowSuccessMessage(true);
+    setShowSuccessMessage(true);
     }
   };
 
@@ -797,10 +797,10 @@ const AIReadinessAssessment: React.FC<AIReadinessAssessmentProps> = ({ onComplet
       </div>
 
       {/* Overall Progress Bar (bottom) */}
-      <OverallProgress
-        totalQuestions={totalQuestions}
-        answeredQuestions={answeredQuestions}
-      />
+        <OverallProgress
+          totalQuestions={totalQuestions}
+          answeredQuestions={answeredQuestions}
+        />
 
       {/* Action Buttons */}
       <div className="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-gray-200 py-3 flex justify-center space-x-4 shadow-lg">

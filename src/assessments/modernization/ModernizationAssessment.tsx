@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Award, FileText, Brain, CheckCircle } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { FileText, Brain, CheckCircle } from 'lucide-react';
 import { categories } from './data/questions';
 import { Answer, CategoryProgress } from './types/assessment';
 import { calculateScore } from './utils/scoring';
@@ -12,6 +12,186 @@ import { SubmissionConfirmationDialog } from './components/SubmissionConfirmatio
 import AIReadinessAssessment from '../AIReadinessAssessment';
 import ffisLogo from '../../assets/FFIS-logo.png';
 import { supabase } from '../../supabaseClient';
+
+const modernityCategories = [
+  {
+    name: "Architecture",
+    questions: [
+      { id: 1, text: "Uses microservices or modular architecture?", category: "Architecture" },
+      { id: 2, text: "Provides API-first or event-driven design (RESTful/GraphQL APIs, WebSockets, event streaming)?", category: "Architecture" },
+      { id: 3, text: "Uses containerization & orchestration (Docker, Kubernetes)?", category: "Architecture" },
+      { id: 4, text: "Is serverless or cloud-native (auto-scaling, managed services, cloud-agnostic)?", category: "Architecture" },
+      { id: 5, text: "Supports edge computing?", category: "Architecture" },
+    ]
+  },
+  {
+    name: "Development & Deployment",
+    questions: [
+      { id: 6, text: "Implements CI/CD automation?", category: "Development & Deployment" },
+      { id: 7, text: "Uses Infrastructure as Code (IaC)?", category: "Development & Deployment" },
+      { id: 8, text: "Integrates DevSecOps into the lifecycle?", category: "Development & Deployment" },
+    ]
+  },
+  {
+    name: "Scalability & Performance",
+    questions: [
+      { id: 9, text: "Supports elastic scalability?", category: "Scalability & Performance" },
+      { id: 10, text: "Uses high availability & fault tolerance strategies?", category: "Scalability & Performance" },
+      { id: 11, text: "Uses async processing or event-driven architecture for scalability?", category: "Scalability & Performance" },
+    ]
+  },
+  {
+    name: "Data & Storage",
+    questions: [
+      { id: 12, text: "Supports polyglot persistence (multiple database types)?", category: "Data & Storage" },
+      { id: 13, text: "Uses streaming or real-time data processing technologies?", category: "Data & Storage" },
+      { id: 14, text: "Ensures data governance & compliance (encryption, privacy, regulations)?", category: "Data & Storage" },
+    ]
+  },
+  {
+    name: "Security & Compliance",
+    questions: [
+      { id: 15, text: "Implements zero trust architecture (strong authentication, least privilege)?", category: "Security & Compliance" },
+      { id: 16, text: "Encrypts data end-to-end (at rest and in transit)?", category: "Security & Compliance" },
+      { id: 17, text: "Uses modern API security standards (OAuth2, OpenID Connect, JWT, API gateways)?", category: "Security & Compliance" },
+      { id: 18, text: "Integrates automated security testing into CI/CD pipelines?", category: "Security & Compliance" },
+    ]
+  },
+  {
+    name: "User Experience",
+    questions: [
+      { id: 19, text: "Uses responsive & progressive UI (modern frameworks)?", category: "User Experience" },
+      { id: 20, text: "Is mobile-first & cross-platform (PWA, responsive web, mobile apps)?", category: "User Experience" },
+      { id: 21, text: "Optimized for low latency & high performance (CDN, caching, efficient rendering)?", category: "User Experience" },
+    ]
+  },
+  {
+    name: "Observability & Monitoring",
+    questions: [
+      { id: 22, text: "Uses centralized logging & monitoring (ELK, Prometheus, Grafana, OpenTelemetry)?", category: "Observability & Monitoring" },
+      { id: 23, text: "Has automated incident response (AIOps, alerting, self-healing)?", category: "Observability & Monitoring" },
+      { id: 24, text: "Tracks business & technical metrics (performance, SLAs, user behavior)?", category: "Observability & Monitoring" },
+    ]
+  },
+  {
+    name: "Technical Debt Management",
+    questions: [
+      { id: 25, text: "Minimizes reliance on legacy code and outdated technologies?", category: "Technical Debt Management" },
+      { id: 26, text: "Codebase is maintainable and clean (SOLID, DDD, separation of concerns)?", category: "Technical Debt Management" },
+      { id: 27, text: "Performs automated refactoring & code quality checks regularly?", category: "Technical Debt Management" },
+    ]
+  },
+  {
+    name: "Backward Compatibility & Lifecycle",
+    questions: [
+      { id: 28, text: "New updates are backward compatible and do not break integrations?", category: "Backward Compatibility & Lifecycle" },
+      { id: 29, text: "Tech stack lifecycle is managed (dependencies/frameworks upgraded regularly)?", category: "Backward Compatibility & Lifecycle" },
+    ]
+  },
+  {
+    name: "Business Agility",
+    questions: [
+      { id: 30, text: "Fast time-to-market (DevOps, CI/CD, modular architecture)?", category: "Business Agility" },
+      { id: 31, text: "Low change failure rate (frequent, stable releases, DORA metrics)?", category: "Business Agility" },
+      { id: 32, text: "Uses data-driven decision-making (real-time analytics, A/B testing, AI insights)?", category: "Business Agility" },
+      { id: 33, text: "Application is API and ecosystem ready (easy integration with third-party services)?", category: "Business Agility" },
+      { id: 34, text: "Business capabilities are composable & reusable (APIs, microservices)?", category: "Business Agility" }
+    ]
+  }
+];
+
+const aiCategories = [
+  {
+    name: "Business Strategy and Objectives",
+    questions: [
+      { id: 1, text: "Our organization has clearly defined AI objectives aligned with business goals.", category: "Business Strategy and Objectives" },
+      { id: 2, text: "Executive leadership actively supports and sponsors AI initiatives.", category: "Business Strategy and Objectives" },
+      { id: 3, text: "We have identified and prioritized AI use cases across business units.", category: "Business Strategy and Objectives" },
+      { id: 4, text: "Success metrics for AI projects are well-defined and measurable.", category: "Business Strategy and Objectives" },
+      { id: 5, text: "There is a clear roadmap for AI adoption and scaling.", category: "Business Strategy and Objectives" }
+    ]
+  },
+  {
+    name: "Technological Infrastructure",
+    questions: [
+      { id: 6, text: "Our IT infrastructure can support AI workloads (e.g., GPUs, scalable storage).", category: "Technological Infrastructure" },
+      { id: 7, text: "We have reliable cloud or on-premises resources for AI development.", category: "Technological Infrastructure" },
+      { id: 8, text: "Integration between existing systems and new AI applications is seamless.", category: "Technological Infrastructure" },
+      { id: 9, text: "We use modern tools for deploying and managing AI models.", category: "Technological Infrastructure" },
+      { id: 10, text: "Our technology stack can scale with increased AI adoption.", category: "Technological Infrastructure" }
+    ]
+  },
+  {
+    name: "Data Infrastructure and Quality",
+    questions: [
+      { id: 11, text: "We have a comprehensive inventory of all data sources.", category: "Data Infrastructure and Quality" },
+      { id: 12, text: "Data required for AI is easily accessible to relevant teams.", category: "Data Infrastructure and Quality" },
+      { id: 13, text: "Our data is accurate, complete, and up to date.", category: "Data Infrastructure and Quality" },
+      { id: 14, text: "Data governance policies (access, privacy, retention) are well established.", category: "Data Infrastructure and Quality" },
+      { id: 15, text: "Data pipelines are automated and robust for AI needs.", category: "Data Infrastructure and Quality" },
+      { id: 16, text: "Data labeling and preparation processes are mature.", category: "Data Infrastructure and Quality" },
+      { id: 17, text: "We regularly monitor and improve data quality.", category: "Data Infrastructure and Quality" },
+      { id: 18, text: "There are clear data ownership and stewardship roles.", category: "Data Infrastructure and Quality" },
+      { id: 19, text: "Our data infrastructure supports real-time and batch processing.", category: "Data Infrastructure and Quality" },
+      { id: 20, text: "Data security and compliance requirements are consistently met.", category: "Data Infrastructure and Quality" }
+    ]
+  },
+  {
+    name: "Operations and Process Efficiency",
+    questions: [
+      { id: 21, text: "Key business processes are mapped and documented.", category: "Operations and Process Efficiency" },
+      { id: 22, text: "We have identified opportunities to automate repetitive tasks with AI.", category: "Operations and Process Efficiency" },
+      { id: 23, text: "Operational workflows support rapid experimentation and deployment.", category: "Operations and Process Efficiency" },
+      { id: 24, text: "Incident response plans exist for AI system failures.", category: "Operations and Process Efficiency" },
+      { id: 25, text: "There is a feedback loop from operations to improve AI models.", category: "Operations and Process Efficiency" }
+    ]
+  },
+  {
+    name: "Talent and Skills",
+    questions: [
+      { id: 26, text: "We have sufficient in-house AI and data science expertise.", category: "Talent and Skills" },
+      { id: 27, text: "Training programs exist to upskill employees in AI-related areas.", category: "Talent and Skills" },
+      { id: 28, text: "Our hiring strategy addresses gaps in AI talent.", category: "Talent and Skills" },
+      { id: 29, text: "Employees are receptive to AI-driven change.", category: "Talent and Skills" },
+      { id: 30, text: "Cross-functional teams collaborate effectively on AI projects.", category: "Talent and Skills" }
+    ]
+  },
+  {
+    name: "Financial Preparedness and ROI",
+    questions: [
+      { id: 31, text: "Budgets for AI projects are clearly allocated and managed.", category: "Financial Preparedness and ROI" },
+      { id: 32, text: "We have a cost model for AI initiatives (hardware, software, talent).", category: "Financial Preparedness and ROI" },
+      { id: 33, text: "ROI metrics are tracked for AI investments.", category: "Financial Preparedness and ROI" },
+      { id: 34, text: "Financial controls are in place for AI-related spending.", category: "Financial Preparedness and ROI" },
+      { id: 35, text: "There is a process to reassess AI investments based on results.", category: "Financial Preparedness and ROI" }
+    ]
+  },
+  {
+    name: "Governance, Compliance, and Ethics",
+    questions: [
+      { id: 36, text: "Data privacy and security policies are enforced for AI projects.", category: "Governance, Compliance, and Ethics" },
+      { id: 37, text: "AI ethics guidelines (fairness, transparency) are documented and followed.", category: "Governance, Compliance, and Ethics" },
+      { id: 38, text: "Regulatory compliance for AI systems is regularly reviewed.", category: "Governance, Compliance, and Ethics" },
+      { id: 39, text: "There is a governance board overseeing AI initiatives.", category: "Governance, Compliance, and Ethics" },
+      { id: 40, text: "Regular audits are conducted on AI models and data usage.", category: "Governance, Compliance, and Ethics" }
+    ]
+  },
+  {
+    name: "Department-Specific Readiness",
+    questions: [
+      { id: 41, text: "AI opportunities in core business processes are well understood.", category: "Department-Specific Readiness" },
+      { id: 42, text: "Business units collaborate with IT on AI projects.", category: "Department-Specific Readiness" },
+      { id: 43, text: "IT can support, monitor, and maintain AI systems reliably.", category: "Department-Specific Readiness" },
+      { id: 44, text: "IT security is adapted to AI-specific risks.", category: "Department-Specific Readiness" },
+      { id: 45, text: "Operations staff are trained to work with AI-enabled tools.", category: "Department-Specific Readiness" },
+      { id: 46, text: "AI is used to optimize operational efficiency.", category: "Department-Specific Readiness" },
+      { id: 47, text: "HR uses AI for talent management, recruitment, or workforce planning.", category: "Department-Specific Readiness" },
+      { id: 48, text: "Change management processes are in place for AI adoption.", category: "Department-Specific Readiness" },
+      { id: 49, text: "Finance uses AI for forecasting, risk, or fraud detection.", category: "Department-Specific Readiness" },
+      { id: 50, text: "Admin processes are being automated or improved with AI.", category: "Department-Specific Readiness" }
+    ]
+  }
+];
 
 interface ApplicationDetails {
   name: string;
@@ -33,7 +213,18 @@ function ModernizationAssessment() {
   const [showApplicationDetails, setShowApplicationDetails] = useState(false);
   const [showSubmissionConfirmation, setShowSubmissionConfirmation] = useState(false);
   const [applicationDetails, setApplicationDetails] = useState<ApplicationDetails | null>(null);
-  const [currentView, setCurrentView] = useState<'home' | 'ai-readiness' | 'modernization'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'ai-readiness' | 'modernization' | 'manage'>('home');
+
+  // Add login state and data state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [aiResponses, setAiResponses] = useState<any[]>([]);
+  const [appResponses, setAppResponses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedResponse, setSelectedResponse] = useState<any>(null);
+  // Move login form state to top level
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const totalQuestions = 34;
   const answeredQuestions = answers.filter(answer => answer.value !== null).length;
@@ -194,6 +385,14 @@ function ModernizationAssessment() {
             onClick={() => setCurrentView('modernization')}
           >
             Application Modernization Assessment
+          </button>
+        </div>
+        <div>
+          <button
+            className={`px-3 py-0.5 rounded-md text-xs font-medium transition-colors ${currentView === 'manage' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-green-50'}`}
+            onClick={() => setCurrentView('manage')}
+          >
+            Manage
           </button>
         </div>
         <div className="text-[10px] text-gray-400 text-right pr-2">
@@ -416,11 +615,465 @@ function ModernizationAssessment() {
     </div>
   );
 
+  // Update renderLoginPage to use top-level state
+  const renderLoginPage = () => {
+    const handleLogin = (e: React.FormEvent) => {
+      e.preventDefault();
+      const login = async () => {
+        setLoading(true);
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          setLoginError(error.message);
+        } else {
+          setIsLoggedIn(true);
+          setLoginError('');
+        }
+        setLoading(false);
+      };
+      login();
+    };
+    if (isLoggedIn) return renderManagePage();
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-xs border border-gray-200">
+          <h2 className="text-lg font-bold mb-4 text-center">Login</h2>
+          <form className="space-y-4" onSubmit={handleLogin}>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
+              <input type="email" className="w-full px-2 py-1 border rounded text-sm" placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Password</label>
+              <input type="password" className="w-full px-2 py-1 border rounded text-sm" placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} />
+            </div>
+            {loginError && <div className="text-xs text-red-500">{loginError}</div>}
+                      <button type="submit" className="w-full bg-blue-600 text-white py-1.5 rounded text-sm font-semibold hover:bg-blue-700 disabled:bg-blue-400" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentView('home')}
+            className="w-full mt-2 bg-gray-200 text-gray-800 py-1.5 rounded text-sm font-semibold hover:bg-gray-300"
+          >
+            Home
+          </button>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  // Modal to display response details
+  const ResponseDetailsModal = ({ response, onClose }: { response: any, onClose: () => void }) => {
+    if (!response) return null;
+
+    const isAIResponse = 'company_name' in response;
+
+    const parseAIResponses = (responsesStr: string): Map<number, number> => {
+      const responses = new Map<number, number>();
+      if (!responsesStr) return responses;
+      responsesStr.split(',').forEach(item => {
+        const parts = item.split('-');
+        if (parts.length === 2) {
+          const questionId = parseInt(parts[0], 10);
+          const value = parseInt(parts[1], 10);
+          if (!isNaN(questionId) && !isNaN(value)) {
+            responses.set(questionId, value);
+          }
+        }
+      });
+      return responses;
+    };
+
+    const calculateAIResult = (responses: Map<number, number>) => {
+      const totalQuestions = 50;
+      let totalScore = 0;
+      responses.forEach(value => { totalScore += value; });
+
+      const maxPossibleScore = totalQuestions * 5;
+      const percentage = (totalScore / maxPossibleScore) * 100;
+
+      let level = '';
+      let message = '';
+      let recommendations: string[] = [];
+
+      if (percentage >= 80) {
+        level = 'Advanced';
+        message = 'Your organization demonstrates exceptional readiness for AI adoption';
+        recommendations = [
+          'Focus on scaling AI initiatives across the organization',
+          'Develop advanced AI capabilities and innovation centers',
+          'Establish AI leadership in your industry',
+        ];
+      } else if (percentage >= 60) {
+        level = 'Mature';
+        message = 'Your organization shows strong readiness for AI implementation';
+        recommendations = [
+          'Address remaining gaps in AI infrastructure',
+          'Expand AI use cases to more business units',
+          'Strengthen AI governance and compliance',
+        ];
+      } else if (percentage >= 40) {
+        level = 'Developing';
+        message = 'Your organization has moderate readiness for AI adoption';
+        recommendations = [
+          'Develop a comprehensive AI strategy and roadmap',
+          'Invest in core AI infrastructure and capabilities',
+          'Build essential AI skills and expertise',
+        ];
+      } else if (percentage >= 20) {
+        level = 'Early Stage';
+        message = 'Your organization is in the initial stages of AI readiness';
+        recommendations = [
+          'Create awareness and education about AI benefits',
+          'Assess current technology infrastructure gaps',
+          'Develop basic data management capabilities',
+        ];
+      } else {
+        level = 'Not Ready';
+        message = 'Your organization needs significant preparation for AI adoption';
+        recommendations = [
+          'Develop a clear vision for AI adoption',
+          'Address fundamental technology infrastructure needs',
+          'Establish basic data management practices',
+        ];
+      }
+
+      return {
+        score: percentage,
+        level,
+        message,
+        recommendations,
+        responses
+      };
+    };
+
+    const renderAIResponseDetails = () => {
+      const parsedResponses = parseAIResponses(response.responses);
+      const result = calculateAIResult(parsedResponses);
+
+      return (
+        <div>
+          <div className="bg-blue-50 rounded-lg p-4 mb-4">
+            <p className="text-3xl font-bold text-blue-600 mb-2">{result.score.toFixed(1)}%</p>
+            <p className="text-xl font-semibold text-gray-800 mb-1">{result.level}</p>
+            <p className="text-gray-600 mb-4">{result.message}</p>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Recommendations</h3>
+            <ul className="space-y-2">
+              {result.recommendations.map((rec, index) => (
+                <li key={index} className="flex items-start gap-2 text-gray-600">
+                  <span className="text-blue-500">•</span>
+                  {rec}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {aiCategories.map(category => (
+            <div key={category.name} className="mb-4">
+              <h4 className="font-medium mb-2 text-gray-700">{category.name}</h4>
+              <ul className="space-y-2">
+                {category.questions.map(question => (
+                  <li key={question.id} className="text-sm text-gray-600">
+                    <strong>Q{question.id}:</strong> {question.text} - <strong>Answer:</strong> {result.responses.get(question.id) || 'N/A'}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      );
+    };
+
+    const calculateModernityResult = (responses: Map<number, number>) => {
+      const totalQuestions = modernityCategories.reduce((acc, cat) => acc + cat.questions.length, 0);
+      let totalScore = 0;
+      responses.forEach(value => { totalScore += value; });
+
+      const percentage = (totalScore / totalQuestions) * 100;
+
+      let level = '';
+      let message = '';
+
+      if (percentage >= 80) {
+        level = 'Highly Modern';
+        message = 'This application is highly modernized and follows best practices.';
+      } else if (percentage >= 60) {
+        level = 'Modern';
+        message = 'This application is well-modernized but has some areas for improvement.';
+      } else if (percentage >= 40) {
+        level = 'Partially Modernized';
+        message = 'This application has some modern features but requires significant modernization efforts.';
+      } else {
+        level = 'Legacy';
+        message = 'This application is a legacy system and needs a comprehensive modernization strategy.';
+      }
+
+      return {
+        score: percentage,
+        level,
+        message,
+        responses
+      };
+    };
+
+    const parseModernityResponses = (responsesStr: string): Map<number, number> => {
+      const responses = new Map<number, number>();
+      if (!responsesStr) return responses;
+      responsesStr.split(',').forEach(item => {
+        const parts = item.split('-');
+        if (parts.length === 2) {
+          const questionId = parseInt(parts[0], 10);
+          const value = parseInt(parts[1], 10);
+          if (!isNaN(questionId) && !isNaN(value)) {
+            responses.set(questionId, value);
+          }
+        }
+      });
+      return responses;
+    };
+
+    const renderModernityResponseDetails = () => {
+      const parsedResponses = parseModernityResponses(response.responses);
+      const result = calculateModernityResult(parsedResponses);
+
+      return (
+        <div>
+          <div className="bg-green-50 rounded-lg p-4 mb-4">
+            <p className="text-3xl font-bold text-green-600 mb-2">{result.score.toFixed(1)}%</p>
+            <p className="text-xl font-semibold text-gray-800 mb-1">{result.level}</p>
+            <p className="text-gray-600">{result.message}</p>
+          </div>
+
+          {modernityCategories.map(category => (
+            <div key={category.name} className="mb-4">
+              <h4 className="font-medium mb-2 text-gray-700">{category.name}</h4>
+              <ul className="space-y-2">
+                {category.questions.map(question => (
+                  <li key={question.id} className="text-sm text-gray-600">
+                    <strong>Q{question.id}:</strong> {question.text} - <strong>Answer:</strong> {result.responses.get(question.id) === 1 ? 'Yes' : 'No'}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      );
+    };
+
+
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Response Details - {response.name || response.company_name}</h3>
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">✕</button>
+          </div>
+          <div className="p-4 overflow-y-auto">
+            <div className="mb-4">
+              <h4 className="font-medium mb-2">{isAIResponse ? 'Company' : 'Application'} Information:</h4>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                {isAIResponse ? (
+                  <>
+                    <div>Company: {response.company_name || '-'}</div>
+                    <div>Contact: {response.contact_name || '-'}</div>
+                    <div>Designation: {response.designation || '-'}</div>
+                    <div>Email: {response.email || '-'}</div>
+                    <div>Phone: {response.phone || '-'}</div>
+                  </>
+                ) : (
+                  <>
+                    <div>Name: {response.name || '-'}</div>
+                    <div>Mnemonic: {response.mnemonic || '-'}</div>
+                    <div>Tech Stack: {response.techstack || '-'}</div>
+                    <div>Owner: {response.ownername || '-'}</div>
+                    <div>Company: {response.companyname || '-'}</div>
+                    <div>Email: {response.email || '-'}</div>
+                  </>
+                )}
+              </div>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">Responses:</h4>
+              {isAIResponse ? renderAIResponseDetails() : renderModernityResponseDetails()}
+            </div>
+          </div>
+          <div className="p-4 border-t border-gray-200 flex justify-end">
+            <button onClick={onClose} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Close</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render manage page with two tables
+  const renderManagePage = () => {
+    // Sort responses by created_at ascending
+    const aiSorted = [...aiResponses].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    const appSorted = [...appResponses].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-2">
+        <div className="w-full max-w-4xl">
+          {/* Breadcrumb and user info bar */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-2">
+            <nav className="text-xs text-gray-500 flex items-center gap-2">
+              <button
+                className="hover:underline text-blue-600 font-medium"
+                onClick={() => { setCurrentView('home'); setIsLoggedIn(false); setEmail(''); setPassword(''); }}
+              >
+                Home
+              </button>
+              <span className="mx-1">/</span>
+              <span className="text-gray-700">Dashboard</span>
+            </nav>
+            <div className="flex items-center gap-4">
+              <span className="text-xs text-gray-700 font-medium">{email}</span>
+              <button
+                className="text-xs text-red-500 hover:underline font-medium"
+                onClick={() => { setIsLoggedIn(false); setEmail(''); setPassword(''); }}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+          {/* Card with description */}
+          <div className="bg-white rounded-lg shadow border border-gray-200 p-6 mb-8">
+            <h1 className="text-xl font-bold mb-2 text-gray-800">Assessment Dashboard</h1>
+            <p className="text-sm text-gray-600 mb-0.5">Report of assessment responses received</p>
+          </div>
+          {/* AI Responses Table */}
+          <div className="bg-white rounded-lg shadow border border-gray-200 p-4 mb-8">
+            <h2 className="text-lg font-bold mb-4">AI Responses</h2>
+            {loading ? <div>Loading...</div> : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full border text-xs">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="border px-2 py-1">Company Name</th>
+                      <th className="border px-2 py-1">Contact Name</th>
+                      <th className="border px-2 py-1">Designation</th>
+                      <th className="border px-2 py-1">Email</th>
+                      <th className="border px-2 py-1">Phone</th>
+                      <th className="border px-2 py-1">Created At</th>
+                      <th className="border px-2 py-1">Results</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {aiSorted.map((row, i) => (
+                    <tr key={i} className="even:bg-gray-50">
+                      <td className="border px-2 py-1">{row.company_name}</td>
+                      <td className="border px-2 py-1">{row.contact_name}</td>
+                      <td className="border px-2 py-1">{row.designation}</td>
+                      <td className="border px-2 py-1">{row.email}</td>
+                      <td className="border px-2 py-1">{row.phone}</td>
+                      <td className="border px-2 py-1">{formatDateTime(row.created_at)}</td>
+                      <td className="border px-2 py-1 text-center">
+                        <button
+                          onClick={() => setSelectedResponse(row)}
+                          className="text-blue-600 hover:underline text-xs"
+                        >
+                          Report
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+          {/* Modernity Responses Table */}
+          <div className="bg-white rounded-lg shadow border border-gray-200 p-4">
+            <h2 className="text-lg font-bold mb-4">Modernity Responses</h2>
+            {loading ? <div>Loading...</div> : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full border text-xs">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="border px-2 py-1">App Name</th>
+                      <th className="border px-2 py-1">Mnemonic</th>
+                      <th className="border px-2 py-1">Owner Name</th>
+                      <th className="border px-2 py-1">Company Name</th>
+                      <th className="border px-2 py-1">Designation</th>
+                      <th className="border px-2 py-1">Email</th>
+                      <th className="border px-2 py-1">Phone</th>
+                      <th className="border px-2 py-1">Created At</th>
+                      <th className="border px-2 py-1">Results</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {appSorted.map((row, i) => (
+                    <tr key={i} className="even:bg-gray-50">
+                      <td className="border px-2 py-1">{row.name}</td>
+                      <td className="border px-2 py-1">{row.mnemonic}</td>
+                      <td className="border px-2 py-1">{row.ownername}</td>
+                      <td className="border px-2 py-1">{row.companyname}</td>
+                      <td className="border px-2 py-1">{row.designation}</td>
+                      <td className="border px-2 py-1">{row.email}</td>
+                      <td className="border px-2 py-1">{row.phone}</td>
+                      <td className="border px-2 py-1">{formatDateTime(row.created_at)}</td>
+                      <td className="border px-2 py-1 text-center">
+                        <button
+                          onClick={() => setSelectedResponse(row)}
+                          className="text-blue-600 hover:underline text-xs"
+                        >
+                          Report
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Add date formatting helper
+  function formatDateTime(dt: string) {
+    if (!dt) return '';
+    const date = new Date(dt);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = date.toLocaleString('en-US', { month: 'short' });
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}-${month}-${year} ${hours}:${minutes}`;
+  }
+
+  // Fetch data after login
+  useEffect(() => {
+    if (isLoggedIn && currentView === 'manage') {
+      setLoading(true);
+      Promise.all([
+        supabase.from('ai_response').select('company_name, contact_name, designation, email, phone, created_at, responses').order('created_at', { ascending: false }),
+        supabase.from('app_response').select('name, mnemonic, ownername, companyname, designation, email, phone, created_at, responses, techstack, description, remarks').order('created_at', { ascending: false })
+      ]).then(([aiRes, appRes]) => {
+        setAiResponses(aiRes.data || []);
+        setAppResponses(appRes.data || []);
+        setLoading(false);
+      });
+    }
+  }, [isLoggedIn, currentView]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {currentView === 'home' && renderHomePage()}
       {currentView === 'ai-readiness' && renderAIReadinessAssessment()}
       {currentView === 'modernization' && renderModernizationAssessment()}
+      {currentView === 'manage' && renderLoginPage()}
+      
+      {/* Response Details Modal */}
+      {selectedResponse && (
+        <ResponseDetailsModal 
+          response={selectedResponse} 
+          onClose={() => setSelectedResponse(null)} 
+        />
+      )}
 
       {/* Category Dialog */}
       {selectedCategoryIndex !== null && (
